@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Bath, BedDouble, CalendarDays, Heart, MapPin, Ruler, Share2 } from 'lucide-react'
 import { properties } from '@/lib/properties'
+import { PropertyAssistant } from './property-assistant'
 
 type Property = (typeof properties)[number]
 
@@ -29,5 +30,6 @@ export function PropertyDetails({ property }: { property: Property }) {
       </div>
     </main>
     <footer className="border-t border-[#0874d1] bg-[#0874d1] text-white"><div className="mx-auto flex max-w-[1280px] flex-col gap-4 px-5 py-8 text-sm sm:flex-row sm:items-center sm:justify-between lg:px-8"><Link href="/#top" className="text-[28px] font-black leading-none tracking-[-0.12em]">odp</Link><div className="flex gap-5"><Link href="/#properties">Properties</Link><Link href="/#locations">Locations</Link><Link href="/#contact">Contact</Link></div><span className="text-white/75">© 2026 OneStep Dream Property</span></div></footer>
+    <PropertyAssistant />
   </div>
 }
