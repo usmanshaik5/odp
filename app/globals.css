@@ -226,6 +226,21 @@
   .cta-wave { animation: none; }
 }
 
+/* Keep dense product surfaces usable from narrow phones through wide screens. */
+@media (max-width: 639px) {
+  html { overflow-x: hidden; }
+  button, a, input, select, textarea { touch-action: manipulation; }
+  .hero-3d { min-height: 280px; height: 280px; border-radius: 20px; }
+  .hero-illustration { min-height: 280px; }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .hero-3d { min-height: 340px; height: 340px; }
+}
+
+img { content-visibility: auto; }
+
+
 footer p,
 footer a,
 footer h2,
