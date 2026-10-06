@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { ArrowLeft, CalendarDays, Check, Clock3, MapPin } from 'lucide-react'
 import { properties } from '@/lib/properties'
+import { createClient } from '@/lib/supabase/client'
 import { PropertyAssistant } from './property-assistant'
 
 type Property = (typeof properties)[number]
@@ -16,6 +17,8 @@ export function AppointmentBooking({ property }: { property: Property }) {
   const [date, setDate] = useState('')
   const [selectedSlot, setSelectedSlot] = useState('')
   const [confirmed, setConfirmed] = useState(false)
+  const [bookingError, setBookingError] = useState('')
+  const supabase = useMemo(() => createClient(), [])
   const venue = `${property.location.split(',')[0]} Experience Centre`
   const formattedDate = useMemo(() => {
     if (!date) return 'Choose a date'
@@ -42,6 +45,20 @@ export function AppointmentBooking({ property }: { property: Property }) {
   }
 
   const canConfirm = Boolean(date && selectedSlot)
+  const confirmAppointment = async () => {
+    if (!canConfirm) return
+    setBookingError('')
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      setBookingError('Please sign in before requesting a visit. Agent conversations and bookings are secured to your account.')
+      return
+    }
+    const { data: enquiry, error: enquiryError } = await supabase.from('enquiries').insert({ property_id: String(properties.indexOf(property)), customer_id: user.id, customer_name: user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'Customer', customer_email: user.email ?? '', message: `Appointment request for ${property.title}` }).select('id').single()
+    if (enquiryError || !enquiry) { setBookingError('We could not create your request. Please try again.'); return }
+    const { error } = await supabase.from('appointments').insert({ enquiry_id: enquiry.id, property_id: String(properties.indexOf(property)), customer_id: user.id, appointment_date: date, appointment_time: selectedSlot, venue })
+    if (error) { setBookingError('We could not reserve that slot. Please try again.'); return }
+    setConfirmed(true)
+  }
   return <PageShell>
     <main className="mx-auto max-w-[1280px] px-4 pb-16 pt-8 sm:px-6 lg:px-8 lg:pt-12">
       <Link href={`/properties/${properties.indexOf(property)}`} className="inline-flex items-center gap-2 text-sm font-medium text-[#5f6368] hover:text-[#0874d1]"><ArrowLeft data-icon="inline-start" /> Back to property</Link>
@@ -55,7 +72,8 @@ export function AppointmentBooking({ property }: { property: Property }) {
             <div><p className="text-sm font-semibold">Available time</p><div className="mt-3 grid grid-cols-2 gap-2">{slots.map((slot) => <button key={slot} type="button" onClick={() => setSelectedSlot(slot)} className={`h-12 rounded-xl border text-sm transition ${selectedSlot === slot ? 'border-[#0874d1] bg-[#0874d1] font-semibold text-white' : 'border-[#cbd8e1] hover:border-[#0874d1] hover:text-[#0874d1]'}`}>{slot}</button>)}</div></div>
           </div>
           <div className="mt-8 border border-[#dce5eb] bg-[#f7fbfe] p-5"><div className="flex gap-3"><MapPin className="mt-0.5 size-5 shrink-0 text-[#0874d1]" /><div><p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#5f6368]">Appointment venue</p><p className="mt-1 font-semibold">{venue}</p><p className="mt-1 text-sm text-[#5f6368]">{property.location}</p></div></div></div>
-          <button type="button" disabled={!canConfirm} onClick={() => setConfirmed(true)} className="mt-8 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-[#0874d1] px-5 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(8,116,209,.2)] transition hover:bg-[#0667bb] disabled:cursor-not-allowed disabled:bg-[#b7cbd9] sm:w-auto sm:min-w-64">{canConfirm ? 'Confirm appointment' : 'Select date and time'}</button>
+          {bookingError && <p role="alert" className="mt-5 max-w-xl text-sm text-[#b42318]">{bookingError}</p>}
+          <button type="button" disabled={!canConfirm} onClick={confirmAppointment} className="mt-8 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-[#0874d1] px-5 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(8,116,209,.2)] transition hover:bg-[#0667bb] disabled:cursor-not-allowed disabled:bg-[#b7cbd9] sm:w-auto sm:min-w-64">{canConfirm ? 'Confirm appointment' : 'Select date and time'}</button>
         </section>
         <aside className="h-fit border border-[#dce5eb] bg-white p-4 sm:p-5"><div className="relative aspect-[1.45/1] overflow-hidden bg-[#edf5fb]"><Image src={property.image} alt={`${property.title} exterior`} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 40vw" /></div><p className="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-[#0874d1]">Selected property</p><h2 className="mt-2 text-2xl font-medium tracking-[-0.04em]">{property.title}</h2><p className="mt-2 flex items-center gap-2 text-sm text-[#5f6368]"><MapPin className="size-4 text-[#0874d1]" /> {property.location}</p><div className="mt-5 flex items-center justify-between border-t border-[#e5e5e5] pt-4 text-sm"><span className="text-[#5f6368]">Starting price</span><strong className="text-[#0874d1]">{property.price}</strong></div></aside>
       </div>

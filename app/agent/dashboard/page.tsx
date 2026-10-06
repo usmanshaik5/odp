@@ -20,6 +20,8 @@ export default function AgentDashboard() {
   const [selected, setSelected] = useState<Enquiry | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [search, setSearch] = useState('')
+  const [appointmentError, setAppointmentError] = useState('')
 
   const load = async (id: string) => {
     const [{ data: eq }, { data: ap }] = await Promise.all([
