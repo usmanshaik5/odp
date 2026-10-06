@@ -3,9 +3,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
-import { ArrowLeft, ArrowRight, Bath, BedDouble, CalendarDays, Heart, MapPin, Ruler, Share2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Bath, BedDouble, CalendarDays, Heart, MapPin, Menu, Ruler, Share2, X } from 'lucide-react'
 import { properties } from '@/lib/properties'
 import { PropertyAssistant } from './property-assistant'
+import { SiteMobileNav } from './site-mobile-nav'
 
 type Property = (typeof properties)[number]
 
@@ -18,7 +19,7 @@ export function PropertyDetails({ property }: { property: Property }) {
   const bathrooms = bhk.startsWith('4') ? '4 Bathrooms' : bhk.startsWith('3') ? '3 Bathrooms' : '2 Bathrooms'
 
   return <div className="min-h-screen bg-white text-[#111111]">
-    <header className="sticky top-0 z-40 border-b border-[#e5e5e5] bg-white"><div className="mx-auto flex h-[58px] max-w-[1280px] items-center gap-4 px-4 lg:h-[72px] lg:px-8"><Link href="/#top" className="flex items-center text-[#0874d1]" aria-label="OneStep Dream Property home"><span className="text-[28px] font-black leading-none tracking-[-0.12em]">odp</span></Link><nav className="hidden flex-1 items-center justify-center gap-8 text-sm text-[#5f6368] lg:flex" aria-label="Main navigation"><Link href="/#top">Home</Link><Link href="/#properties">Buy Flats</Link><Link href="/#properties">Properties</Link><Link href="/#locations">Locations</Link><Link href="/#about">About Us</Link><Link href="/#contact">Contact</Link></nav><Link href="/#contact" className="ml-auto hidden text-sm text-[#5f6368] lg:block">Login / Register</Link><Link href="/#contact" className="rounded-xl border border-[#0874d1] px-3 py-2 text-sm">List Property</Link></div></header>
+    <header className="sticky top-0 z-40 border-b border-[#e5e5e5] bg-white"><div className="relative mx-auto flex h-[58px] max-w-[1280px] items-center gap-4 px-4 lg:h-[72px] lg:px-8"><SiteMobileNav /><Link href="/#top" className="flex items-center text-[#0874d1]" aria-label="OneStep Dream Property home"><span className="text-[28px] font-black leading-none tracking-[-0.12em]">odp</span></Link><nav className="hidden flex-1 items-center justify-center gap-8 text-sm text-[#5f6368] lg:flex" aria-label="Main navigation"><Link href="/#top">Home</Link><Link href="/#properties">Buy Flats</Link><Link href="/#properties">Properties</Link><Link href="/#locations">Locations</Link><Link href="/#about">About Us</Link><Link href="/#contact">Contact</Link></nav><Link href="/#contact" className="ml-auto hidden text-sm text-[#5f6368] lg:block">Login / Register</Link><Link href="/#contact" className="rounded-xl border border-[#0874d1] px-3 py-2 text-sm">List Property</Link></div></header>
     <main>
       <div className="mx-auto max-w-[1280px] px-4 pb-16 pt-7 sm:px-6 lg:px-8 lg:pt-10">
         <Link href="/#properties" className="mb-7 inline-flex items-center gap-2 text-sm font-medium text-[#5f6368] hover:text-[#0874d1]"><ArrowLeft data-icon="inline-start" /> Back to properties</Link>

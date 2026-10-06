@@ -7,6 +7,7 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Html, Environment } from '@react-three/drei'
 import { ArrowRight, Bath, BedDouble, Building2, ChevronDown, LocateFixed, MapPin, Search, SlidersHorizontal, Sparkles, X } from 'lucide-react'
 import { properties } from '@/lib/properties'
+import { SiteMobileNav } from './site-mobile-nav'
 
 type Category = 'All' | 'Apartment' | 'Villa' | 'Land' | 'Commercial'
 
@@ -94,7 +95,7 @@ export function PropertyMap() {
   return (
     <div className="min-h-screen bg-[#f6f8fb] text-[#111827]">
       <header className="sticky top-0 z-30 border-b border-[#dce5ee] bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-[70px] max-w-[1280px] items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="relative mx-auto flex h-[70px] max-w-[1280px] items-center justify-between px-4 sm:px-6 lg:px-8"><SiteMobileNav />
           <Link href="/" className="flex items-center gap-3" aria-label="OneStep Dream Property home"><span className="text-[32px] font-black leading-none tracking-[-0.12em] text-[#0874d1]">odp</span><span className="hidden border-l border-[#dce5ee] pl-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#5f6368] sm:inline">Property Atlas</span></Link>
           <nav className="hidden items-center gap-6 text-sm text-[#5f6368] md:flex"><Link href="/" className="hover:text-[#0874d1]">Home</Link><Link href="#explore" className="font-semibold text-[#111827]">Explore map</Link><Link href="/agent/dashboard" className="hover:text-[#0874d1]">Agent workspace</Link></nav>
           <Link href="/" className="rounded-full border border-[#0874d1] px-3 py-2 text-xs font-semibold text-[#0874d1] transition hover:bg-[#eef7ff] sm:px-4">Back to listings</Link>
